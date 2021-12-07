@@ -72,27 +72,34 @@ int main(void)
 	
   while (1)
   {
-		/*0.04 saniye'lik örnekleme frekansi ile Açi degerlerini al*/
+	  	//
+	  	PU6050_Calibration_Accel();
+		//
+	  
+		/*0.04 saniye'lik Ã¶rnekleme frekansi ile AÃ§i degerlerini al*/
 		if((currentTime - timeIntervalMpu6050) > 40)
 		{
 			timeIntervalMpu6050 = currentTime;
-			
-			MPU6050_Read_Acell(&accel_angle_x,&accel_angle_y); //
+			//
+			MPU6050_Read_Raw_Accel();
+			Low_Pass_Filter();
+			MPU6050_Set_Angle_Accel(&accel_angle_x,&accel_angle_y);
+			//
 			MPU6050_Read_Gyro(&gyro_angle_x,&gyro_angle_y,&gyro_angle_z);
 			complementaryFilter(&accel_angle_x,&accel_angle_y,&Roll_Axis,&Pitch_Axis);
 
 		}
 		
-		/*0.1 saniyede Terminal ekrana verileri gönder.*/
+		/*0.1 saniyede Terminal ekrana verileri gÃ¶nder.*/
 		if((currentTime-timeIntervalHc05)>100)
 		{
 			timeIntervalHc05 = currentTime ;
 			
-			Hc05_WriteDoubleValue(accel_angle_y); //terminal ekrana Gyro açisini yazdir
+			Hc05_WriteDoubleValue(accel_angle_y); //terminal ekrana Gyro aÃ§isini yazdir
 			Hc05_WriteStrValue("			");
-			Hc05_WriteDoubleValue(gyro_angle_y);  //terminal ekrana ivme açisini yazdir
+			Hc05_WriteDoubleValue(gyro_angle_y);  //terminal ekrana ivme aÃ§isini yazdir
 			Hc05_WriteStrValue("			");
-			Hc05_WriteDoubleValue(Pitch_Axis); //terminal ekrana filitre açisini yazdir
+			Hc05_WriteDoubleValue(Pitch_Axis); //terminal ekrana filitre aÃ§isini yazdir
 			Hc05_WriteStrValue("\r\n");
 			
 		}
